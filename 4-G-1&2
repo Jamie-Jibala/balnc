@@ -1,0 +1,65 @@
+import java.io.*;
+import java.net.*;
+class HttpClient{
+    public static void main(String a[])throws Exception{
+    try{
+    BufferedReader ifu = new BufferedReader(new InputStreamReader(System.in));
+    Socket clientsocket = new Socket("localhost",6789);
+    BufferedReader ifs = new BufferedReader(new InputStreamReader(clientsocket.getInputStream()));
+    DataOutputStream otc = new DataOutputStream(clientsocket.getOutputStream());
+    System.out.println("GET_URl :");
+    String sentence = ifu.readLine()+'\n';
+    otc.writeBytes(sentence +'\n');
+    String mfs = ifs.readLine()+'\n';
+    mfs = ifs.readLine();
+    clientsocket.close();
+}catch(Exception e){
+    e.printStackTrace();
+}
+}}
+
+import java.io.*;
+import java.net.*;
+import java.util.*;
+class HttpServer{
+    private static final String USER_AGENT = "Google Chrome";
+    static String sendGET(String GET_URL)throws IOException{
+        URL obj = new URL(GET_URL);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        con.setRequestMethod("GET");
+        con.setRequestProperty("USER_AGENT",USER_AGENT);
+        int rc = con.getResponseCode();
+        System.out.println("Response Code : "+rc);
+        if(rc==HttpURLConnection.HTTP_OK){
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+            while((inputLine = in.readLine())!= null){
+                response.append(inputLine);
+            }
+            in.close();
+            System.out.println("RECIEVED : "+response.toString());
+            return(response.toString());
+        }
+        else{
+            System.out.println("Some GET ERROR");
+            return(null);
+        }
+    }
+    public static void main(String args[])throws Exception
+    {
+        ServerSocket ss = new ServerSocket(6789);
+        try{
+            while(true){
+                Socket consoc = ss.accept();
+                BufferedReader ifc = new BufferedReader(new InputStreamReader(consoc.getInputStream()));
+                DataOutputStream otc = new DataOutputStream(consoc.getOutputStream());
+                String cs = ifc.readLine()+'\n';
+                otc.writeBytes(sendGET(cs)+'\n');
+                System.out.println("Get Method Done");
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+}
