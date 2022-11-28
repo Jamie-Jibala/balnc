@@ -1,0 +1,28 @@
+
+import java.io.*;
+import java.util.*;
+import java.net.*;
+public class TCPClient {
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args)throws Exception {
+        Socket ss = new Socket("localhost",6788);
+        BufferedReader br = new BufferedReader(new InputStreamReader(ss.getInputStream()));
+        BufferedReader br1 = new BufferedReader(new InputStreamReader(System.in));
+        PrintStream os1 = new PrintStream(ss.getOutputStream());
+        while(true){
+            System.out.print("Client : ");
+            String s = br1.readLine();
+            os1.println(s);
+            if(s.equalsIgnoreCase("BYE")){
+                break;
+            }
+            s = br.readLine();
+            System.out.println("Server : "+s);
+        }
+        ss.close();
+    }
+    
+}
