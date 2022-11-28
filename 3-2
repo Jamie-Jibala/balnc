@@ -1,0 +1,32 @@
+import java.io.*;
+import java.net.*;
+import java.util.*;
+public class UDPServer {
+    public static DatagramSocket Sersock;
+    public static DatagramPacket dp;
+    public static BufferedReader dis;
+    public static byte buf[] = new byte[1024];
+    public static InetAddress ia;
+    public static int cport=789, sport=790;
+    public static void main(String[] args)throws Exception {
+        Sersock = new DatagramSocket(sport);
+        dp = new DatagramPacket(buf, buf.length);
+        ia = InetAddress.getLocalHost();
+        dis = new BufferedReader(new InputStreamReader(System.in));
+        while(true){
+            Sersock.receive(dp);
+            String s = new String(dp.getData(),0,dp.getLength());
+            System.out.println("Client"+s);
+            if(s.equals("BYE")){
+                System.out.println("Terminated");
+                break;
+            }
+            String s2=dis.readLine();
+            System.out.println("Server:"+s2);
+            buf = s2.getBytes();
+            Sersock.send(new DatagramPacket(buf,s2.length(),ia,cport));
+        }
+        Sersock.close();
+    }
+    
+}
