@@ -1,0 +1,63 @@
+import java.io.*;
+import java.net.*;
+import java.util.*;
+public class FtpClient{
+    public static void main(String a[]) throws Exception
+    {
+        Socket ss = new Socket(InetAddress.getByName("localhost"),5000);
+        FileOutputStream fos = new FileOutputStream("D:\\javae.txt");
+        BufferedOutputStream bos = new BufferedOutputStream(fos);
+        DataInputStream dis = new DataInputStream(ss.getInputStream());
+        byte[] contents = new byte[10000];
+        int bytesRead=0;
+        while((bytesRead=dis.read(contents))!=-1){
+            bos.write(contents,0,bytesRead);
+            bos.flush();
+        }
+        System.out.println("File Saved Successfully");
+        ss.close();
+    }
+}
+
+import java.io.*;
+import java.net.*;
+import java.util.*;
+public class ftpserver {
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args)throws Exception {
+        ServerSocket sersock = new ServerSocket(5000);
+        Socket ss = sersock.accept();
+        InetAddress IA = InetAddress.getByName("localhost");
+        File file = new File("D:\\javac.txt");
+        FileInputStream fis = new FileInputStream(file);
+        BufferedInputStream bis = new BufferedInputStream(fis);
+        DataOutputStream dos = new DataOutputStream(ss.getOutputStream());
+        byte[] contents;
+        
+        long len=file.length();
+        long current = 0;
+        while(current!=len){
+            int size = 10000;
+            if((len-current)>=size){
+                current+=size;
+            }
+            else
+            {
+                size = (int)(len-current);
+                current=len;
+       
+            }
+            contents = new byte[size];
+            bis.read(contents,0,size);
+            dos.write(contents);
+            dos.flush();
+            System.out.println("File Transfer "+(current*100)/len+"% completed");
+        }
+        sersock.close();
+        ss.close();
+    }
+    
+}
