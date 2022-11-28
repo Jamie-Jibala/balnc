@@ -1,0 +1,33 @@
+import java.io.*;
+import java.net.*;
+import java.util.*;
+public class UDPClient {
+    public static DatagramSocket clisock;
+    public static DatagramPacket dp;
+    public static BufferedReader dis;
+    public static byte buf[] = new byte[1024];
+    public static InetAddress ia;
+    public static int cport=789, sport=790;
+    public static void main(String[] args)throws Exception {
+        clisock = new DatagramSocket(cport);
+        dp= new DatagramPacket(buf, buf.length);
+        ia = InetAddress.getLocalHost();
+        dis = new BufferedReader(new InputStreamReader(System.in));
+        while(true){
+            String s = dis.readLine();
+            buf= s.getBytes();
+            System.out.println("Client:"+s);
+            if(s.equalsIgnoreCase("BYE")){
+                clisock.send(new DatagramPacket(buf,s.length(),ia,sport));
+                System.out.println("Terminated");
+                break;
+            }
+            clisock.send(new DatagramPacket(buf,s.length(),ia,sport));
+            clisock.receive(dp);
+            String s2 = new String(dp.getData(),0,dp.getLength());
+            System.out.println("Server:"+s2);
+        }
+        clisock.close();
+    }
+    
+}
