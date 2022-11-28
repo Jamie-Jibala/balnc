@@ -1,0 +1,29 @@
+import java.io.;
+import java.net.;
+import java.util.*;
+public class PingTry
+{
+    static void command(ArrayList<String> c) throws Exception
+    {
+        ProcessBuilder build = new ProcessBuilder(c);
+        Process process = build.start();
+        BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        String s = null;
+        while((s = br.readLine())!=null)
+        {
+            System.out.println(s);
+        }
+
+    }
+    public static void main(String[] args) throws Exception
+    {
+        ArrayList<String> c = new ArrayList<String>();
+        c.add("ping");
+
+        c.add("-i");
+        c.add("6");
+        c.add("www.google.com");
+        PingTry.command(c);
+
+    }
+}
