@@ -1,0 +1,49 @@
+import javax.mail.*;
+import java.util.*;
+import java.util.Properties;
+class Readmail {
+public static final String USERNAME = "dhanvibalaji@gmail.com";
+  public static final String PASSWORD = "mdivbwrrrrycvyxj";
+    public static void func() throws Exception {
+        Properties props = new Properties();
+        props.setProperty("mail.pop3.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        props.setProperty("mail.pop3.socketFactory.fallback", "false");
+        props.setProperty("mail.pop3.socketFactory.port", "995");
+        props.setProperty("mail.pop3.ssl.trust", "*");
+        props.put("mail.pop3.port", "995");
+        props.put("mail.pop3.host", "pop.gmail.com");
+        props.put("mail.pop3.ssl.protocols", "TLSv1.2");
+        props.put("mail.pop3.user", Readmail.USERNAME);
+         props.put("mail.password",Readmail.PASSWORD);
+        props.put("mail.store.protocol", "pop3");
+        Authenticator auth = new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(Readmail.USERNAME, Readmail.PASSWORD);
+            }
+        };        
+        Session session = Session.getInstance(props, auth);
+        Store store = session.getStore("pop3");
+        store.connect("pop.gmail.com", Readmail.USERNAME, Readmail.PASSWORD);
+        Folder inbox = store.getFolder("INBOX");
+        inbox.open(Folder.READ_ONLY);
+        Scanner inp = new Scanner(System.in);   
+        Message[] messages = inbox.getMessages();
+        for (Message message : messages) {
+            message.writeTo(System.out);
+            System.out.print("\nDo you want to continue ?? ");
+            String st = inp.nextLine();            
+            if (st.equalsIgnoreCase("no")) 
+            	{
+            	System.out.println("\n\nINBOX MESSAGES READ SUCCESSFULLY !!\n");
+            	break;
+            	}}  
+        inbox.close(false);
+        store.close();
+    }}
+public class ReadEmail{
+	public static void main(String[] args) throws Exception {
+		System.out.println("Welcome "+Readmail.USERNAME.split("@")[0]);		
+	System.out.println("\nReceiving Inbox Messages...\n");
+		Readmail.func();
+	}}
