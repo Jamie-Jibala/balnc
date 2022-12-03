@@ -1,0 +1,70 @@
+import java.util.Properties;
+import java.util.*;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+public class SendMail {
+    public static void main(String[] args){
+    	Scanner inp = new Scanner(System.in);
+        String from = "dhanvibalaji@gmail.com";
+        String[] arrOf = from.split("@"); 
+        System.out.println("\n\tWelcome "+arrOf[0]+"\n");
+        System.out.println("Type **YES** to send mail !!\n");
+        String ans = inp.nextLine();
+        if (!ans.equalsIgnoreCase("yes")) {
+        	System.out.println("Okay Leaving ..!!");
+        	return;
+        }
+        else {
+        System.out.print("Enter to address: ");
+        String to = inp.nextLine();
+        String host = "smtp.gmail.com";
+        Properties properties = System.getProperties();
+        properties.put("mail.smtp.host", host);
+        properties.put("mail.smtp.port", "465");
+        properties.put("mail.smtp.ssl.enable", "true");
+        properties.put("mail.smtp.auth", "true");
+      
+        Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
+
+            protected PasswordAuthentication getPasswordAuthentication() {
+
+                return new PasswordAuthentication("dhanvibalaji@gmail.com", "mdivbwrrrrycvyxj");
+
+            }
+
+        });
+
+        session.setDebug(true);
+
+        try {
+           
+            MimeMessage message = new MimeMessage(session);
+
+          
+            message.setFrom(new InternetAddress(from));
+
+        
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+            System.out.println("Enter Subject: ");
+            message.setSubject(inp.nextLine());
+
+            System.out.println("Enter your Message : ");
+            message.setText(inp.nextLine());
+
+            System.out.println("\nSending Mail...\n");
+            
+            Transport.send(message);
+            System.out.println("\nSent message successfully....");
+            
+        } 
+    
+        catch (MessagingException mex) {
+            mex.printStackTrace();
+        	}
+       }
+}
